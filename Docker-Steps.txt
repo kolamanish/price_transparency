@@ -1,0 +1,85 @@
+
+# ================================================================================= 
+# Login to Cloud9
+# =================================================================================
+
+Url : https://console.aws.amazon.com/cloud9/home?region=us-east-1 Create environment
+
+Name : < name your cloud9 env >
+New Ec2 : < Pick an instance >
+Platform : < Pick linux >
+Once created click on "Open in Cloud9"
+
+In the command line 
+	create a folder(eg "my-ptd-code") to work
+	Inside the base folder create "script" directory.
+	create the python file here and name as "my-parse-large-JSON.py". Code provided.
+	Create the docker file ("Dockerfile") in the base folder ("my-ptd-code")
+
+Docker File has :
+	FROM python:3.9
+	WORKDIR /home
+	RUN mkdir script
+	RUN python -m pip install —upgrade pip
+	RUN pip install boto3 awswrangler iJSON jmespath
+	COPY ./script/* ./script/
+	RUN wget "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip“
+	RUN unzip awscli-exe-linux-x86_64.zip
+	RUN ./aws/install
+	RUN ls -lR /home/script/*
+	RUN rm awscli-exe-linux-x86_64.zip
+	RUN export AWS_PROFILE_ENV='default'
+	RUN echo $(aws configure get default.aws_access_key_id)
+	ENTRYPOINT [ "python","/home/script/my-parse-large-JSON.py" ]
+
+# ================================================================================= 
+# Login to ECR
+# =================================================================================
+
+Url : https://us-east-1.console.aws.amazon.com/ecr/repositories?region=us-east-1
+
+Create repository
+	Can create in public or private up to you.
+	Repository name : < "my-large-JSON-parser" >
+		After the repository is created click on View push command. This gives step by step instruction on command to execute in Cloud9 base folder.
+
+			aws ecr-public get-login-password —region us-east-1 | docker login —username AWS —password-stdin public.ecr.aws/b1234i345
+			docker build -t my-large-JSON-parser .
+			docker tag my-large-JSON-parser:latest public.ecr.aws/b1234i345/my-large-JSON-parser:latest
+			docker push public.ecr.aws/b2i7z8d7/my-large-JSON-parser:latest
+
+# =================================================================================
+# Login to ECS
+# =================================================================================
+
+Url : https://us-east-1.console.aws.amazon.com/ecs/v2/clusters?region=us-east-1
+
+Create cluster
+	Cluster name : < Pick a name >
+	Networking : < Pick appropriate vpc and subnets>
+	Create Task defination
+		Configure task definition and containers
+		Task definition family : < Pick a name >
+		Container details
+		Name : < Pick a name >
+		Image URI : : < Get the name from ECR > 
+		Choose Next
+			Environment
+			App environment : AWS Fargate
+			Give CPU and Memory
+			Add the Task and Execution role
+			Add Storage
+			Enable CLoudWatch logs
+			Create
+	Go to Cluster
+		Click on Task tab
+		Run new task
+		Select Launch Type
+		Select Task
+			Select Task family
+			Create
+This will start the python job in an ECS.
+
+# ================================================================================= 
+# Done. Once the process starts you can see the log file in CloudWatch
+# =================================================================================

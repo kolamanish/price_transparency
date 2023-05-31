@@ -1,0 +1,308 @@
+{
+"jobConfig": {
+"name": "my-in-network-job",
+"description": "",
+"role": "arn:aws:iam::123456789101:role/my-lab-role", "command": "glueetl",
+"version": "3.0",
+"workerType": "G.2X",
+ "numberOfWorkers": 100,
+"maxCapacity": 200,
+"maxRetries": 0,
+"timeout": 2880,
+"maxConcurrentRuns": 1,
+"security": "none",
+"scriptName": "my-in-network-job.py",
+"scriptLocation": "s3://aws-glue-assets-123456789101-us-east-1/scripts/", "language": "python-3",
+"jobParameters": [],
+"tags": [],
+"jobMode": "DEVELOPER_MODE",
+"createdOn": "2023-02-20T17:32:42.358Z",
+"developerMode": true,
+"connectionsList": [],
+"temporaryDirectory": "s3://my-app-bucket/temp/",
+"etlAutoScaling": true,
+"logging": true,
+"glueHiveMetastore": true,
+"etlAutoTuning": true,
+"metrics": true,
+"spark": true,
+"pythonPath": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_common.py,s3://aws-glue-studio- transforms-510798373988-prod-us-east-1/gs_flatten.py",
+"bookmark": "job-bookmark-disable",
+"sparkPath": "s3://my-app-bucket/script/",
+"flexExecution": false,
+"minFlexWorkers": null
+},
+"dag": {
+"node-1": {
+"nodeId": "node-1",
+"dataPreview": false,
+"previewAmount": 0,
+"inputs": [],
+"name": "S3 bucket",
+"generatedNodeName": "S3bucket_node1",
+"classification": "DataSource",
+"type": "S3",
+"isCatalog": false,
+"format": "parquet",
+"paths": [
+"s3://my-app-bucket/input/uncomp_JSON/split_out/data/in_network/"
+],
+"compressionType": null,
+"exclusions": [],
+"groupFiles": null,
+"groupSize": null,
+"recurse": true,
+"maxBand": null,
+"maxFilesInBand": null,
+"additionalOptions": {
+
+ "boundedSize": null,
+"boundedFiles": null,
+"enableSamplePath": false,
+"samplePath": "s3://my-app-bucket/input/uncomp_JSON/split_out/data/in_network/data_0", "boundedOption": null
+},
+"outputSchemas": [
+[
+{
+"key": "negotiation_arrangement", "fullPath": [ "negotiation_arrangement"
+],
+"type": "string",
+"children": null
+},
+{
+"key": "name",
+"fullPath": [
+"name"
+],
+"type": "string",
+"children": null
+},
+{
+"key": "billing_code_type", "fullPath": [
+"billing_code_type"
+],
+"type": "string",
+"children": null
+},
+{
+"key": "billing_code_type_version", "fullPath": [ "billing_code_type_version"
+],
+"type": "string",
+"children": null
+},
+{
+"key": "billing_code",
+"fullPath": [
+"billing_code"
+],
+"type": "string",
+"children": null
+},
+{
+"key": "description",
+"fullPath": [
+"description"
+
+ ],
+"type": "string",
+"children": null
+},
+{
+"key": "negotiated_rates", "fullPath": [
+"negotiated_rates"
+],
+"type": "array",
+"children": [
+{
+"key": "negotiated_prices", "fullPath": [
+"negotiated_rates", "negotiated_prices"
+],
+"type": "array",
+"children": [
+{
+"key": "additional_information", "fullPath": [
+"negotiated_rates", "negotiated_prices", "additional_information"
+],
+"type": "string",
+"children": null
+},
+{
+"key": "billing_class", "fullPath": [
+"negotiated_rates", "negotiated_prices", "billing_class"
+],
+"type": "string",
+"children": null
+},
+{
+"key": "billing_code_modifier", "fullPath": [
+"negotiated_rates", "negotiated_prices", "billing_code_modifier"
+],
+"type": "string array", "children": null
+},
+{
+"key": "expiration_date", "fullPath": [
+
+ "negotiated_rates", "negotiated_prices", "expiration_date"
+],
+"type": "string", "children": null },
+{
+"key": "negotiated_rate", "fullPath": [ "negotiated_rates", "negotiated_prices", "negotiated_rate"
+],
+"type": "decimal",
+"children": null
+},
+{
+"key": "negotiated_type", "fullPath": [ "negotiated_rates", "negotiated_prices", "negotiated_type"
+],
+"type": "string",
+"children": null
+},
+{
+"key": "service_code", "fullPath": [ "negotiated_rates", "negotiated_prices", "service_code"
+],
+"type": "string array", "children": null
+}
+]
+},
+{
+"key": "provider_references", "fullPath": [ "negotiated_rates", "provider_references"
+],
+"type": "bigint array", "children": null
+}
+]
+}
+]
+],
+
+ "calculatedType": "", "codeGenVersion": 2 },
+"node-2": {
+"nodeId": "node-2", "dataPreview": false, "previewAmount": 0, "inputs": [
+"node-1"
+],
+"name": "ApplyMapping", "generatedNodeName": "ApplyMapping_node2", "classification": "Transform",
+"type": "ApplyMapping",
+"mapping": [
+{
+"toKey": "negotiation_arrangement",
+"fromPath": [
+"negotiation_arrangement"
+],
+"toType": "string",
+"fromType": "string",
+"dropped": false,
+"children": null
+},
+{
+"toKey": "name",
+"fromPath": [
+"name"
+],
+"toType": "string",
+"fromType": "string",
+"dropped": false,
+"children": null
+},
+{
+"toKey": "billing_code_type",
+"fromPath": [
+"billing_code_type"
+],
+"toType": "string",
+"fromType": "string",
+"dropped": false,
+"children": null
+},
+{
+"toKey": "billing_code_type_version", "fromPath": [
+"billing_code_type_version"
+],
+"toType": "string",
+"fromType": "string",
+
+ "dropped": false, "children": null
+},
+{
+"toKey": "billing_code", "fromPath": [ "billing_code"
+],
+"toType": "string", "fromType": "string", "dropped": false, "children": null
+},
+{
+"toKey": "description",
+"fromPath": [
+"description"
+],
+"toType": "string",
+"fromType": "string",
+"dropped": false,
+"children": null
+},
+{
+"toKey": "negotiated_rates",
+"fromPath": [
+"negotiated_rates"
+],
+"toType": "array",
+"fromType": "array",
+"dropped": false,
+"children": null
+}
+],
+"parentsValid": true,
+"calculatedType": "",
+"codeGenVersion": 2
+},
+"node-3": {
+"nodeId": "node-3",
+"dataPreview": false,
+"previewAmount": 0,
+"inputs": [
+"node-1676914224233"
+],
+"name": "S3 bucket", "generatedNodeName": "S3bucket_node3", "classification": "DataSink",
+"type": "S3",
+"streamingBatchInterval": 100,
+"format": "glueparquet",
+"compression": "uncompressed",
+
+ "path": "s3://my-app-bucket/output/glueout/", "partitionKeys": [],
+"schemaChangePolicy": {
+"enableUpdateCatalog": false,
+"updateBehavior": null, "database": null,
+"table": null
+},
+"updateCatalogOptions": "none", "calculatedType": "", "codeGenVersion": 2
+},
+"node-1676914224233": {
+"nodeId": "node-1676914224233",
+"dataPreview": false,
+"previewAmount": 0,
+"inputs": [
+"node-2"
+],
+"name": "Flatten",
+"generatedNodeName": "Flatten_node1676914224233",
+"classification": "Transform",
+"type": "DynamicTransform",
+"parameters": [
+{
+"name": "maxLevels",
+"value": [
+"4"
+],
+"isOptional": true,
+"type": "int",
+"listType": null
+}
+],
+"functionName": "gs_flatten",
+"path": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_flatten.py",
+"version": "1.0.0",
+"transformName": "gs_flatten",
+"parentsValid": true,
+"calculatedType": "",
+"codeGenVersion": 2
+}
+},
+"hasBeenSaved": false,
+"script": "import sys\nfrom awsglue.transforms import *\nfrom awsglue.utils import getResolvedOptions\nfrom pyspark.context import SparkContext\nfrom awsglue.context import GlueContext\nfrom awsglue.job import Job\nfrom awsglue.dynamicframe import DynamicFrame\nfrom pyspark.sql import functions as F\n\nargs = getResolvedOptions(sys.argv, [\"JOB_NAME\"])\nsc = SparkContext()\nglueContext = GlueContext(sc)\nspark = glueContext.spark_session\njob = Job(glueContext)\njob.init(args[\"JOB_NAME\"], args)\n\n# Script generated for node S3 bucket\nS3bucket_node1 = glueContext.create_dynamic_frame.from_options(\n format_options={},\n connection_type=\"s3\",\n format=\"parquet\",\n connection_options={\n \"paths\": [\n \"s3://my-app-bucket/input/uncomp_JSON/split_out/new- 6000/data/in_network/\"\n ],\n \"recurse\": True,\n },\n transformation_ctx=\"S3bucket_node1\",\n)\n\n# Script generated for node ApplyMapping\nApplyMapping_node2 = ApplyMapping.apply(\n frame=S3bucket_node1,\n mappings=[\n (\"negotiation_arrangement\", \"string\", \"negotiation_arrangement\", \"string\"),\n (\"name\", \"string\", \"name\", \"string\"),\n (\"billing_code_type\", \"string\", \"billing_code_type\", \"string\"),\n (\"billing_code_type_version\", \"string\", \"billing_code_type_version\", \"string\"),\n (\"billing_code\", \"string\", \"billing_code\", \"string\"),\n (\"description\", \"string\", \"description\", \"string\"),\n (\"negotiated_rates\", \"array\", \"negotiated_rates\", \"array\"),\n ],\n transformation_ctx=\"ApplyMapping_node2\",\n)\n\n# Script generated for node Flatten\n#Flatten_node1676914224233 = ApplyMapping_node2.gs_flatten(maxLevels=4)\n\ndef flatten_JSON(srcJSONDf):\n temp2DF = srcJSONDf.withColumn('neg_rate_exp', F.explode('negotiated_rates')).drop('negotiated_rates')\n temp2DF.printSchema()\n temp4DF = temp2DF.withColumn('neg_rate_exp_neg_price_exp',F.explode('neg_rate_exp.negotiated_prices'))\n temp4DF.printSchema()\n temp5DF = temp4DF.withColumn('neg_rate_exp_neg_price_exp_prov_ref',F.explode('neg_rate_exp.provider_references')).drop('neg_rat e_exp')\n temp5DF.printSchema()\n '''\n temp5DF = temp4DF.select('last_updated_on','billing_code','billing_code_type','billing_code_type_version','negotiated_prices_exp.billing_c lass',F.explode('negotiated_prices_exp.billing_code_modifier'))\n temp5DF.printSchema()\n temp6DF = temp5DF.withColumnRenamed('col','billing_code_modifier')\n temp6DF.printSchema()\n #temp6DF.show(5)\n '''\n return temp5DF\n \n\n\n# Script generated for node S3 bucket\nS3bucket_node3 = glueContext.write_dynamic_frame.from_options(\n frame=DynamicFrame.fromDF(flatten_JSON(ApplyMapping_node2.toDF()), glueContext, 'flatten'),\n connection_type=\"s3\",\n format=\"glueparquet\",\n connection_options={\n \"path\": \"s3://my-app-bucket/output/glueout/\",\n \"partitionKeys\": [],\n },\n format_options={\"compression\": \"uncompressed\"},\n transformation_ctx=\"S3bucket_node3\",\n)\n\njob.commit()\n"
+}
